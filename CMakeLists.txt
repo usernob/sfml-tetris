@@ -27,7 +27,7 @@ set(SRC_FILES
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SFML::Graphics SFML::Audio)
 
