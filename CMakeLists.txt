@@ -17,17 +17,22 @@ add_compile_definitions("DEBUG=$<CONFIG:Debug>")
 
 include_directories(src)
 
-set(SRC_FILES 
-  src/main.cpp 
-  src/game.cpp
-  src/grid.cpp
-  src/pieces.cpp
-  src/utils.cpp
-)
+set(SRC_FILES src/main.cpp src/game.cpp src/grid.cpp src/pieces.cpp
+              src/utils.cpp)
+
+add_custom_target(
+  copy-files ALL COMMAND ${CMAKE_COMMAND} -E copy_directory
+                         ${CMAKE_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/bin/assets)
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+add_dependencies(${PROJECT_NAME} copy-files)
+
+if(MSVC)
+  target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+else()
+  target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SFML::Graphics SFML::Audio)
 
