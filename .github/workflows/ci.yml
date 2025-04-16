@@ -36,3 +36,24 @@ jobs:
 
     - name: Build
       run: cmake --build build --config Release
+
+    - name: Archive bin folder
+      run: |
+        if [[ "${{ runner.os }}" == "Linux" ]]; then
+          cmake -E tar cfvz build/archive.tar.gz --format=gnutar build/bin
+        else
+          cmake -E tar cfv build/archive.zip --format=zip build/bin
+        fi
+      shell: bash
+
+    - name: Show build folder contents
+      shell: bash
+      run: ls -l build
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.platform.name }}-artifact
+        path: |
+          build/archive.zip
+          build/archive.tar.gz
