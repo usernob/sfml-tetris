@@ -22,9 +22,9 @@ protected:
     sf::VertexArray m_vertices;
 
     sf::Vector2f m_pixelpos, m_size;
-    void _set_color(sf::Vertex *const triangles, sf::Color color);
-    void _set_color(int index, sf::Color color);
-    void _initialize(sf::Vector2f pixel_pos, sf::Vector2f size);
+    void _set_color(sf::Vertex *const triangles, const sf::Color &color);
+    void _set_color(const int index, const sf::Color &color);
+    void _initialize(const sf::Vector2f &pixel_pos, const sf::Vector2f &size);
 
 public:
     Grid() {};
@@ -76,7 +76,7 @@ public:
     GameBoard &operator=(const GameBoard &) = delete;
     GameBoard &operator=(GameBoard &&) = delete;
 
-    void initialize(sf::Vector2f pos, PieceMatrixColor *current_piece)
+    void initialize(const sf::Vector2f &pos, PieceMatrixColor *current_piece)
     {
         _initialize(pos, {BOARD_COLS, BOARD_ROWS});
         m_current_piece = current_piece;
@@ -90,14 +90,14 @@ public:
 
     void move_piece_right();
 
-    void rotate_piece(RotateDirection direction);
+    void rotate_piece(const RotateDirection direction);
 
     int get_completed_lines();
 
     void update(const sf::Vector2i &new_pos);
 
-    bool is_row_full(int row) const;
-    bool is_row_empty(int row) const;
+    bool is_row_full(const int row) const;
+    bool is_row_empty(const int row) const;
 
 private:
     bool _check_if_can_move(const PieceMatrix &piece, const sf::Vector2i &new_pos) const;
@@ -118,7 +118,7 @@ public:
     NextPieceBoard &operator=(const NextPieceBoard &) = delete;
     NextPieceBoard &operator=(NextPieceBoard &&) = delete;
 
-    void initialize(sf::Vector2f pos)
+    void initialize(const sf::Vector2f &pos)
     {
         _initialize(pos, {PIECE_COLS, PIECE_ROWS});
     }

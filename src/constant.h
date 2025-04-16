@@ -20,10 +20,10 @@
 
 using PieceMatrix = std::array<bool, PIECE_ROWS * PIECE_COLS>;
 
-constexpr sf::Color CELL_COLOR_DEFAULT = sf::Color(48, 51, 52);
-constexpr sf::Color TEXT_COLOR_DEFAULT = sf::Color(177, 181, 184);
+const sf::Color CELL_COLOR_DEFAULT = sf::Color(48, 51, 52);
+const sf::Color TEXT_COLOR_DEFAULT = sf::Color(177, 181, 184);
 
-constexpr std::array<sf::Color, 6> Colors = {
+const std::array<sf::Color, 6> Colors = {
     sf::Color(224, 108, 117),
     sf::Color(152, 195, 121),
     sf::Color(97, 175, 239),

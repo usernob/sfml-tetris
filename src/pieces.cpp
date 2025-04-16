@@ -7,7 +7,7 @@ namespace Piece
 
 void get_random(PieceMatrixColor &ouput)
 {
-    int index = Utils::random_int(0, 6);
+    const int index = Utils::random_int(0, 6);
     // copy the matrix to output
     for (int i = 0; i < Piece::pieces[index].size(); i++)
     {
@@ -19,26 +19,26 @@ void get_random(PieceMatrixColor &ouput)
 // REF: https://stackoverflow.com/questions/42519/how-do-you-rotate-a-two-dimensional-array
 void rotate(PieceMatrix &ouput, RotateDirection direction)
 {
-    int layer_count = PIECE_COLS / 2;
+    const int layer_count = PIECE_COLS / 2;
 
     for (int layer = 0; layer < layer_count; layer++)
     {
-        int first = layer;
-        int last = PIECE_COLS - first - 1;
+        const int first = layer;
+        const int last = PIECE_COLS - first - 1;
 
         for (int element = first; element < last; element++)
         {
-            int offset = element - first;
+            const int offset = element - first;
 
-            int top_index = first * PIECE_COLS + element;
-            int right_side_index = element * PIECE_COLS + last;
-            int bottom_index = last * PIECE_COLS + (last - offset);
-            int left_side_index = (last - offset) * PIECE_COLS + first;
+            const int top_index = first * PIECE_COLS + element;
+            const int right_side_index = element * PIECE_COLS + last;
+            const int bottom_index = last * PIECE_COLS + (last - offset);
+            const int left_side_index = (last - offset) * PIECE_COLS + first;
 
-            bool top = ouput[top_index];
-            bool right_side = ouput[right_side_index];
-            bool bottom = ouput[bottom_index];
-            bool left_side = ouput[left_side_index];
+            const bool top = ouput[top_index];
+            const bool right_side = ouput[right_side_index];
+            const bool bottom = ouput[bottom_index];
+            const bool left_side = ouput[left_side_index];
 
             if (direction == RotateDirection::CLOCKWISE)
             {

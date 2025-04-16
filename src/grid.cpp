@@ -5,7 +5,7 @@
 
 // Initialize the grid with empty cells
 // also set the vertex position and color
-void Grid::_initialize(sf::Vector2f pixel_pos, sf::Vector2f size)
+void Grid::_initialize(const sf::Vector2f &pixel_pos, const sf::Vector2f &size)
 {
     m_pixelpos = pixel_pos;
     m_size = size;
@@ -62,7 +62,7 @@ void Grid::draw(sf::RenderTarget &target, sf::RenderStates states) const
     target.draw(m_vertices, states);
 }
 
-void Grid::_set_color(sf::Vertex *const triangles, sf::Color color)
+void Grid::_set_color(sf::Vertex *const triangles, const sf::Color &color)
 {
     triangles[0].color = color;
     triangles[1].color = color;
@@ -72,7 +72,7 @@ void Grid::_set_color(sf::Vertex *const triangles, sf::Color color)
     triangles[5].color = color;
 }
 
-void Grid::_set_color(int index, sf::Color color)
+void Grid::_set_color(const int index, const sf::Color &color)
 {
     sf::Vertex *const triangles = &m_vertices[index * VERTICES_PER_CELL];
     _set_color(triangles, color);
@@ -86,8 +86,8 @@ void GameBoard::update(const sf::Vector2i &new_pos)
         for (int y = 0; y < PIECE_ROWS; y++)
         {
 
-            int prev_grid_x = (x + m_current_piece_pos.x);
-            int prev_grid_y = (y + m_current_piece_pos.y);
+            const int prev_grid_x = (x + m_current_piece_pos.x);
+            const int prev_grid_y = (y + m_current_piece_pos.y);
 
             if (prev_grid_y >= 0 && prev_grid_y < BOARD_ROWS && prev_grid_x >= 0 &&
                 prev_grid_x < BOARD_COLS)
@@ -108,9 +108,9 @@ void GameBoard::update(const sf::Vector2i &new_pos)
     {
         for (int y = 0; y < PIECE_ROWS; y++)
         {
-            bool piece_cell = m_current_piece->piece[x + y * PIECE_COLS];
-            int grid_x = (x + new_pos.x);
-            int grid_y = (y + new_pos.y);
+            const bool piece_cell = m_current_piece->piece[x + y * PIECE_COLS];
+            const int grid_x = (x + new_pos.x);
+            const int grid_y = (y + new_pos.y);
 
             // only update the cell inside the grid
             if (piece_cell && grid_y >= 0 && grid_y < BOARD_ROWS && grid_x >= 0 &&
@@ -135,16 +135,20 @@ bool GameBoard::_check_if_can_move(const PieceMatrix &piece, const sf::Vector2i 
     {
         for (int y = 0; y < PIECE_ROWS; y++)
         {
-            bool piece_cell = piece[x + y * PIECE_COLS];
+            const bool piece_cell = piece[x + y * PIECE_COLS];
             if (piece_cell)
             {
-                int grid_x = (x + new_pos.x);
-                int grid_y = (y + new_pos.y);
+                const int grid_x = (x + new_pos.x);
+                const int grid_y = (y + new_pos.y);
                 // if cell is outside the board
                 // but cell below the board is still valid
                 if (grid_y >= BOARD_ROWS || grid_x < 0 || grid_x >= BOARD_COLS)
                 {
                     return false;
+                }
+                if (grid_y < 0)
+                {
+                    continue;
                 }
                 // if cell is already filled
                 if (m_grid[grid_x + grid_y * BOARD_COLS].state == CellState::FILLED)
@@ -169,11 +173,11 @@ void GameBoard::_store_piece()
     {
         for (int y = 0; y < PIECE_ROWS; y++)
         {
-            bool piece_cell = m_current_piece->piece[x + y * PIECE_COLS];
+            const bool piece_cell = m_current_piece->piece[x + y * PIECE_COLS];
             if (piece_cell)
             {
-                int grid_x = (x + m_current_piece_pos.x);
-                int grid_y = (y + m_current_piece_pos.y);
+                const int grid_x = (x + m_current_piece_pos.x);
+                const int grid_y = (y + m_current_piece_pos.y);
 
                 if (piece_cell && grid_y >= 0 && grid_y < BOARD_ROWS && grid_x >= 0 &&
                     grid_x < BOARD_COLS)
@@ -198,7 +202,7 @@ void GameBoard::reset_piece()
 
 bool GameBoard::move_piece_down()
 {
-    sf::Vector2i new_pos = {m_current_piece_pos.x, m_current_piece_pos.y + 1};
+    const sf::Vector2i new_pos = {m_current_piece_pos.x, m_current_piece_pos.y + 1};
     if (_check_if_can_move(m_current_piece->piece, new_pos))
     {
         update(new_pos);
@@ -209,7 +213,7 @@ bool GameBoard::move_piece_down()
 
 void GameBoard::move_piece_left()
 {
-    sf::Vector2i new_pos = {m_current_piece_pos.x - 1, m_current_piece_pos.y};
+    const sf::Vector2i new_pos = {m_current_piece_pos.x - 1, m_current_piece_pos.y};
     if (_check_if_can_move(m_current_piece->piece, new_pos))
     {
         update(new_pos);
@@ -218,14 +222,14 @@ void GameBoard::move_piece_left()
 
 void GameBoard::move_piece_right()
 {
-    sf::Vector2i new_pos = {m_current_piece_pos.x + 1, m_current_piece_pos.y};
+    const sf::Vector2i new_pos = {m_current_piece_pos.x + 1, m_current_piece_pos.y};
     if (_check_if_can_move(m_current_piece->piece, new_pos))
     {
         update(new_pos);
     }
 }
 
-void GameBoard::rotate_piece(RotateDirection direction)
+void GameBoard::rotate_piece(const RotateDirection direction)
 {
     PieceMatrix rotated_piece;
     for (int i = 0; i < m_current_piece->piece.size(); i++)
@@ -290,7 +294,7 @@ void GameBoard::rotate_piece(RotateDirection direction)
     }
 }
 
-bool GameBoard::is_row_full(int row) const
+bool GameBoard::is_row_full(const int row) const
 {
     int counter = 0;
     for (int i = 0; i < BOARD_COLS; i++)
@@ -303,7 +307,7 @@ bool GameBoard::is_row_full(int row) const
     return counter == BOARD_COLS;
 }
 
-bool GameBoard::is_row_empty(int row) const
+bool GameBoard::is_row_empty(const int row) const
 {
     int counter = 0;
     for (int i = 0; i < BOARD_COLS; i++)

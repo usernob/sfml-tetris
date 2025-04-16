@@ -6,7 +6,7 @@
 namespace Utils
 {
 
-int random_int(int min, int max);
+int random_int(const int min, const int max);
 
 sf::Color random_color();
 
