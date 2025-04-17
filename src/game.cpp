@@ -46,7 +46,6 @@ void Game::load()
     text_score.setFillColor(TEXT_COLOR_DEFAULT);
     text_score.setCharacterSize(40);
     text_score.setPosition({board.get_pixelpos().x + board.get_width() + 10, 10});
-    text_score.setString("Score: " + std::to_string(score));
 
     next_piece_text.setFont(font);
     next_piece_text.setFillColor(TEXT_COLOR_DEFAULT);
@@ -68,6 +67,8 @@ void Game::reset()
     next_piece_board.initialize({board.get_pixelpos().x + board.get_width() + 7, 120});
 
     next_piece_board.update_piece(next_piece);
+
+    text_score.setString("Score: " + std::to_string(score));
 }
 
 void Game::update()
