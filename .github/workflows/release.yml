@@ -14,9 +14,6 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: lukka/get-cmake@latest
-
       - name: Set OS short name
         id: os
         run: |
@@ -32,6 +29,7 @@ jobs:
       - name: Get version
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+        shell: bash
 
       - name: Check if pre-release
         id: prerelease
@@ -42,6 +40,14 @@ jobs:
           else
             echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
           fi
+        shell: bash
+
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libxi-dev libudev-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype-dev
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Configure
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE
