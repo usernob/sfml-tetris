@@ -1,0 +1,65 @@
+name: Release Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Release (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lukka/get-cmake@latest
+
+      - name: Set OS short name
+        id: os
+        run: |
+          if [[ "${{ runner.os }}" == "Windows" ]]; then
+            echo "os_short=windows" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "os_short=macos" >> "$GITHUB_OUTPUT"
+          else
+            echo "os_short=linux" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
+      - name: Get version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=FALSE
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Archive
+        run: |
+          OS_SHORT=${{ steps.os.outputs.os_short }}
+          VERSION=${{ steps.version.outputs.version }}
+
+          mkdir -p build/package
+          # Copy binaries to package folder
+          cp -r build/bin build/package/
+
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            cmake -E tar cfvz build/sfml-tetris-${OS_SHORT}-v${VERSION}.tar.gz --format=gnutar build/package/bin
+          else
+            cmake -E tar cfv build/sfml-tetris-${OS_SHORT}-v${VERSION}.zip --format=zip build/package/bin
+          fi
+        shell: bash
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/sfml-tetris-*.zip
+            build/sfml-tetris-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

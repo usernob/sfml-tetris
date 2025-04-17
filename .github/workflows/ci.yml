@@ -8,7 +8,7 @@ defaults:
 
 jobs:
   build:
-    name: ${{ matrix.platform.name }} ${{ matrix.config.name }}
+    name: ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.os }}
 
     strategy:
@@ -20,8 +20,6 @@ jobs:
         - { name: Linux GCC,      os: ubuntu-latest }
         - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
         - { name: macOS,          os: macos-latest  }
-        config:
-        - { name: Static, flags: -DBUILD_SHARED_LIBS=FALSE }
 
     steps:
     - name: Install Linux Dependencies
@@ -32,28 +30,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Configure
-      run: cmake -B build ${{matrix.platform.flags}} ${{matrix.config.flags}}
+      run: cmake -B build ${{matrix.platform.flags}} -DBUILD_SHARED_LIBS=FALSE
 
     - name: Build
       run: cmake --build build --config Release
-
-    - name: Archive bin folder
-      run: |
-        if [[ "${{ runner.os }}" == "Linux" ]]; then
-          cmake -E tar cfvz build/archive.tar.gz --format=gnutar build/bin
-        else
-          cmake -E tar cfv build/archive.zip --format=zip build/bin
-        fi
-      shell: bash
-
-    - name: Show build folder contents
-      shell: bash
-      run: ls -l build
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.platform.name }}-artifact
-        path: |
-          build/archive.zip
-          build/archive.tar.gz
