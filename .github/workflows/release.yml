@@ -60,14 +60,12 @@ jobs:
           OS_SHORT=${{ steps.os.outputs.os_short }}
           VERSION=${{ steps.version.outputs.version }}
 
-          mkdir -p build/package
-          # Copy binaries to package folder
-          cp -r build/bin build/package/
+          cd build/bin
 
           if [[ "${{ runner.os }}" == "Linux" ]]; then
-            cmake -E tar cfvz build/sfml-tetris-${OS_SHORT}-v${VERSION}.tar.gz --format=gnutar build/package/bin
+            cmake -E tar cfvz ../sfml-tetris-${OS_SHORT}-v${VERSION}.tar.gz --format=gnutar .
           else
-            cmake -E tar cfv build/sfml-tetris-${OS_SHORT}-v${VERSION}.zip --format=zip build/package/bin
+            cmake -E tar cfv ../sfml-tetris-${OS_SHORT}-v${VERSION}.zip --format=zip .
           fi
         shell: bash
 
