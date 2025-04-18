@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   release:
     name: Release (${{ matrix.os }})
@@ -24,12 +28,10 @@ jobs:
           else
             echo "os_short=linux" >> "$GITHUB_OUTPUT"
           fi
-        shell: bash
 
       - name: Get version
         id: version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
-        shell: bash
 
       - name: Check if pre-release
         id: prerelease
@@ -40,7 +42,6 @@ jobs:
           else
             echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
           fi
-        shell: bash
 
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
@@ -67,7 +68,6 @@ jobs:
           else
             cmake -E tar cfv ../sfml-tetris-${OS_SHORT}-v${VERSION}.zip --format=zip .
           fi
-        shell: bash
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1

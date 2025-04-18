@@ -15,11 +15,11 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: Windows VS2019, os: windows-2019  }
-        - { name: Windows VS2022, os: windows-2022  }
-        - { name: Linux GCC,      os: ubuntu-latest }
-        - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
-        - { name: macOS,          os: macos-latest  }
+        - { name: windows-vs2019, os: windows-2019  }
+        - { name: windows-vs2022, os: windows-2022  }
+        - { name: linux-gcc,      os: ubuntu-latest }
+        - { name: linux-clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: macos,          os: macos-latest  }
 
     steps:
     - name: Install Linux Dependencies
@@ -34,3 +34,9 @@ jobs:
 
     - name: Build
       run: cmake --build build --config Release
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.platform.name }}-artifact
+        path: build/bin/
